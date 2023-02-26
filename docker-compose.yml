@@ -1,0 +1,8 @@
+version: "2.0"
+services:
+  bambulabs-exporter:
+    image: bambulabs-exporter
+    build: .
+    container_name: bambulabs-exporter
+    ports:
+      - "9101:9101"
