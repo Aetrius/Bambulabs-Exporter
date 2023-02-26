@@ -7,7 +7,8 @@ import (
 	"log"
 	"net/http"
 	"time"
-
+	"github.com/joho/godotenv"
+	"os"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -15,9 +16,24 @@ import (
 )
 
 var data BambuLabsX1C
+var username string
+var password string
+var broker string
+var mqtt_topic string
 
 type bambulabsCollector struct {
 	humidityMetric *prometheus.Desc
+}
+
+func env(key string) string {
+	// load .env file
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+	return os.Getenv(key)
 }
 
 // You must create a constructor for you collector that
@@ -42,13 +58,13 @@ func (collector *bambulabsCollector) Describe(ch chan<- *prometheus.Desc) {
 // Collect implements required collect function for all prometheus collectors
 func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 
-	var broker = "192.168.1.32"
+	//var broker = broker
 	var port = 8883
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(fmt.Sprintf("ssl://%s:%d", broker, port))
 	opts.SetClientID("go_mqtt_client")
-	opts.SetUsername("bblp")
-	opts.SetPassword("06859d8f")
+	opts.SetUsername(username)
+	opts.SetPassword(password)
 	opts.SetDefaultPublishHandler(messagePubHandler)
 	opts.OnConnect = connectHandler
 	opts.OnConnectionLost = connectLostHandler
@@ -76,7 +92,7 @@ var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 	s := msg.Payload()
 	data := BambuLabsX1C{}
 	json.Unmarshal([]byte(s), &data)
-	//fmt.Printf("\nHumidity: %s", data.Print.Ams.Ams[0].Humidity)
+	fmt.Printf("\nHumidity: %s", data.Print.Ams.Ams[0].Humidity)
 	//fmt.Printf()
 }
 
@@ -89,6 +105,12 @@ var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err
 }
 
 func main() {
+	godotenv.Load()
+
+	broker = env("BAMBU_PRINTER_IP")
+	username = env("USERNAME")
+	password = env("PASSWORD")
+	mqtt_topic = env("MQTT_TOPIC")
 
 	bambulabs := newBambulabsCollector()
 	prometheus.MustRegister(bambulabs)
