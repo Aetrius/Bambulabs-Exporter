@@ -16,8 +16,8 @@ RUN go get github.com/prometheus/client_golang/prometheus/promhttp
 RUN go mod vendor
 RUN go mod tidy
 
-RUN go build -o /bambulabs-exporter
+RUN go build -o /bambulabs-aetrius-exporter
 
 EXPOSE 9101
 
-CMD [ "/bambulabs-exporter" ]
+CMD [ "/bambulabs-aetrius-exporter" ]

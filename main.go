@@ -9,6 +9,7 @@ import (
 	"time"
 	"github.com/joho/godotenv"
 	"os"
+	"strconv"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -21,8 +22,15 @@ var password string
 var broker string
 var mqtt_topic string
 
+
+var humidity float64
+var ams_temp float64
+var ams_bed_temp float64
+
 type bambulabsCollector struct {
-	humidityMetric *prometheus.Desc
+	amsHumidityMetric *prometheus.Desc
+	amsTempMetric *prometheus.Desc
+	amsBedTempMetric *prometheus.Desc
 }
 
 func env(key string) string {
@@ -40,10 +48,18 @@ func env(key string) string {
 // initializes every descriptor and returns a pointer to the collector
 func newBambulabsCollector() *bambulabsCollector {
 	return &bambulabsCollector{
-		humidityMetric: prometheus.NewDesc("humidity_metric",
+		amsHumidityMetric: prometheus.NewDesc("ams_humidity_metric",
 			"humidity of the ams",
 			nil, nil,
 		),
+		amsTempMetric: prometheus.NewDesc("ams_temp_metric",
+			"temperature of the ams",
+			nil, nil,
+		),
+		amsBedTempMetric: prometheus.NewDesc("ams_bed_temp_metric",
+		"temperature of the ams bed",
+		nil, nil,
+	),
 	}
 }
 
@@ -52,7 +68,9 @@ func newBambulabsCollector() *bambulabsCollector {
 func (collector *bambulabsCollector) Describe(ch chan<- *prometheus.Desc) {
 
 	//Update this section with the each metric you create for a given collector
-	ch <- collector.humidityMetric
+	ch <- collector.amsHumidityMetric
+	ch <- collector.amsTempMetric
+	ch <- collector.amsBedTempMetric
 }
 
 // Collect implements required collect function for all prometheus collectors
@@ -81,9 +99,21 @@ func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 	token.Wait()
 	time.Sleep(time.Second)
 	//fmt.Printf("\nHumidity: %s", data.Print.Ams.Ams[0].Humidity)
+	if (humidity != 0) {
+		fmt.Println("\nHumidity: ", humidity)
+		humidity_1 := prometheus.MustNewConstMetric(collector.amsHumidityMetric, prometheus.GaugeValue, humidity)
+		ch <- humidity_1
+	}
 
-	m1 := prometheus.MustNewConstMetric(collector.humidityMetric, prometheus.GaugeValue, 1)
-	ch <- m1
+	if (ams_temp != 0) {
+		//fmt.Println("\nHumidity: ", ams_temp)
+		ams_temp_1 := prometheus.MustNewConstMetric(collector.amsTempMetric, prometheus.GaugeValue, ams_temp)
+		ch <- ams_temp_1
+
+		ams_bed_temp_1 := prometheus.MustNewConstMetric(collector.amsBedTempMetric, prometheus.GaugeValue, ams_bed_temp)
+		ch <- ams_bed_temp_1
+	}
+		
 
 }
 
@@ -92,7 +122,10 @@ var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 	s := msg.Payload()
 	data := BambuLabsX1C{}
 	json.Unmarshal([]byte(s), &data)
-	fmt.Printf("\nHumidity: %s", data.Print.Ams.Ams[0].Humidity)
+	//fmt.Printf("\nHumidity: %s", data.Print.Ams.Ams[0].Humidity)
+	humidity, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Humidity, 64)
+	ams_temp, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Temp, 64)
+	ams_bed_temp, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Tray[0].BedTemp, 64)
 	//fmt.Printf()
 }
 
