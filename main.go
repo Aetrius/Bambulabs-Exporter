@@ -26,11 +26,13 @@ var mqtt_topic string
 var humidity float64
 var ams_temp float64
 var ams_bed_temp float64
+var layer_number float64
 
 type bambulabsCollector struct {
 	amsHumidityMetric *prometheus.Desc
 	amsTempMetric *prometheus.Desc
 	amsBedTempMetric *prometheus.Desc
+	layerNumberMetric *prometheus.Desc
 }
 
 func env(key string) string {
@@ -59,7 +61,11 @@ func newBambulabsCollector() *bambulabsCollector {
 		amsBedTempMetric: prometheus.NewDesc("ams_bed_temp_metric",
 		"temperature of the ams bed",
 		nil, nil,
-	),
+		),
+		layerNumberMetric: prometheus.NewDesc("layer_number_metric",
+		"layer number of the print head in gcode",
+		nil, nil,
+		),
 	}
 }
 
@@ -71,6 +77,7 @@ func (collector *bambulabsCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- collector.amsHumidityMetric
 	ch <- collector.amsTempMetric
 	ch <- collector.amsBedTempMetric
+	ch <- collector.layerNumberMetric
 }
 
 // Collect implements required collect function for all prometheus collectors
@@ -112,6 +119,9 @@ func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 
 		ams_bed_temp_1 := prometheus.MustNewConstMetric(collector.amsBedTempMetric, prometheus.GaugeValue, ams_bed_temp)
 		ch <- ams_bed_temp_1
+
+		layer_number_1 := prometheus.MustNewConstMetric(collector.layerNumberMetric, prometheus.GaugeValue, layer_number)
+		ch <- layer_number_1
 	}
 		
 
@@ -126,6 +136,7 @@ var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 	humidity, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Humidity, 64)
 	ams_temp, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Temp, 64)
 	ams_bed_temp, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Tray[0].BedTemp, 64)
+	layer_number = float64(data.Print.LayerNum)
 	//fmt.Printf()
 }
 
