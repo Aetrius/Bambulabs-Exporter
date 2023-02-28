@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
-	"github.com/joho/godotenv"
 	"os"
 	"strconv"
+	"strings"
+	"time"
+
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/joho/godotenv"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -22,17 +24,40 @@ var password string
 var broker string
 var mqtt_topic string
 
-
 var humidity float64
 var ams_temp float64
 var ams_bed_temp float64
 var layer_number float64
+var print_error float64
+
+var wifi_signal float64
+
+var big_fan1_speed float64
+var big_fan2_speed float64
+var chamber_temper float64
+var cooling_fan_speed float64
+var fail_reason float64
+var fan_gear float64
+var gcode_state string
+var mc_percent float64
+var mc_print_error_code float64
+var mc_print_stage float64
+var mc_print_sub_stage float64
+var mc_remaining_time float64
+var nozzle_target_temper float64
+var nozzle_temper float64
 
 type bambulabsCollector struct {
-	amsHumidityMetric *prometheus.Desc
-	amsTempMetric *prometheus.Desc
-	amsBedTempMetric *prometheus.Desc
-	layerNumberMetric *prometheus.Desc
+	amsHumidityMetric     *prometheus.Desc
+	amsTempMetric         *prometheus.Desc
+	amsBedTempMetric      *prometheus.Desc
+	layerNumberMetric     *prometheus.Desc
+	printErrorMetric      *prometheus.Desc
+	wifiSignalMetric      *prometheus.Desc
+	bigFan1SpeedMetric    *prometheus.Desc
+	bigFan2SpeedMetric    *prometheus.Desc
+	chamberTemperMetric   *prometheus.Desc
+	coolingFanSpeedMetric *prometheus.Desc
 }
 
 func env(key string) string {
@@ -59,12 +84,36 @@ func newBambulabsCollector() *bambulabsCollector {
 			nil, nil,
 		),
 		amsBedTempMetric: prometheus.NewDesc("ams_bed_temp_metric",
-		"temperature of the ams bed",
-		nil, nil,
+			"temperature of the ams bed",
+			nil, nil,
 		),
 		layerNumberMetric: prometheus.NewDesc("layer_number_metric",
-		"layer number of the print head in gcode",
-		nil, nil,
+			"layer number of the print head in gcode",
+			nil, nil,
+		),
+		printErrorMetric: prometheus.NewDesc("print_error_metric",
+			"Print error int",
+			nil, nil,
+		),
+		wifiSignalMetric: prometheus.NewDesc("wifi_signal_metric",
+			"Wifi signal in dBm",
+			nil, nil,
+		),
+		bigFan1SpeedMetric: prometheus.NewDesc("big_fan1_speed_metric",
+			"Big Fan 1 Speed",
+			nil, nil,
+		),
+		bigFan2SpeedMetric: prometheus.NewDesc("big_fan2_speed_metric",
+			"Big Fan 2 Speed",
+			nil, nil,
+		),
+		chamberTemperMetric: prometheus.NewDesc("chamber_temper_metric",
+			"Chamber Temperature of Printer",
+			nil, nil,
+		),
+		coolingFanSpeedMetric: prometheus.NewDesc("cooling_fan_speed_metric",
+			"Cooling Fan Speed",
+			nil, nil,
 		),
 	}
 }
@@ -78,6 +127,12 @@ func (collector *bambulabsCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- collector.amsTempMetric
 	ch <- collector.amsBedTempMetric
 	ch <- collector.layerNumberMetric
+	ch <- collector.printErrorMetric
+	ch <- collector.wifiSignalMetric
+	ch <- collector.bigFan1SpeedMetric
+	ch <- collector.bigFan2SpeedMetric
+	ch <- collector.chamberTemperMetric
+	ch <- collector.coolingFanSpeedMetric
 }
 
 // Collect implements required collect function for all prometheus collectors
@@ -103,16 +158,17 @@ func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 
 	sub(client)
 	defer client.Disconnect(250)
+	defer token.Done()
 	token.Wait()
 	time.Sleep(time.Second)
 	//fmt.Printf("\nHumidity: %s", data.Print.Ams.Ams[0].Humidity)
-	if (humidity != 0) {
+	if humidity != 0 {
 		fmt.Println("\nHumidity: ", humidity)
 		humidity_1 := prometheus.MustNewConstMetric(collector.amsHumidityMetric, prometheus.GaugeValue, humidity)
 		ch <- humidity_1
 	}
 
-	if (ams_temp != 0) {
+	if ams_temp != 0 {
 		//fmt.Println("\nHumidity: ", ams_temp)
 		ams_temp_1 := prometheus.MustNewConstMetric(collector.amsTempMetric, prometheus.GaugeValue, ams_temp)
 		ch <- ams_temp_1
@@ -122,8 +178,26 @@ func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 
 		layer_number_1 := prometheus.MustNewConstMetric(collector.layerNumberMetric, prometheus.GaugeValue, layer_number)
 		ch <- layer_number_1
+
+		print_error_1 := prometheus.MustNewConstMetric(collector.printErrorMetric, prometheus.GaugeValue, print_error)
+		ch <- print_error_1
+
+		wifi_signal_1 := prometheus.MustNewConstMetric(collector.wifiSignalMetric, prometheus.GaugeValue, wifi_signal)
+		ch <- wifi_signal_1
+
+		big_fan1_speed_1 := prometheus.MustNewConstMetric(collector.bigFan1SpeedMetric, prometheus.GaugeValue, big_fan1_speed)
+		ch <- big_fan1_speed_1
+
+		big_fan2_speed_1 := prometheus.MustNewConstMetric(collector.bigFan2SpeedMetric, prometheus.GaugeValue, big_fan2_speed)
+		ch <- big_fan2_speed_1
+
+		chamber_temper_1 := prometheus.MustNewConstMetric(collector.chamberTemperMetric, prometheus.GaugeValue, chamber_temper)
+		ch <- chamber_temper_1
+
+		cooling_fan_speed_1 := prometheus.MustNewConstMetric(collector.coolingFanSpeedMetric, prometheus.GaugeValue, cooling_fan_speed)
+		ch <- cooling_fan_speed_1
+
 	}
-		
 
 }
 
@@ -137,6 +211,12 @@ var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 	ams_temp, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Temp, 64)
 	ams_bed_temp, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Tray[0].BedTemp, 64)
 	layer_number = float64(data.Print.LayerNum)
+	print_error = float64(data.Print.PrintError)
+	wifi_signal, _ = strconv.ParseFloat(strings.ReplaceAll(data.Print.WifiSignal, "dBm", ""), 64)
+	big_fan1_speed, _ = strconv.ParseFloat(data.Print.BigFan1Speed, 64)
+	big_fan2_speed, _ = strconv.ParseFloat(data.Print.BigFan2Speed, 64)
+	chamber_temper = data.Print.ChamberTemper
+	cooling_fan_speed, _ = strconv.ParseFloat(data.Print.CoolingFanSpeed, 64)
 	//fmt.Printf()
 }
 

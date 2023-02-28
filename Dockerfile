@@ -6,7 +6,7 @@ COPY go.mod ./
 COPY go.sum ./
 
 COPY *.go ./
-COPY ".env" ".env"
+COPY .env .env
 
 RUN go mod download
 RUN go get github.com/sirupsen/logrus
