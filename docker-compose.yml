@@ -2,6 +2,7 @@ version: "2.0"
 services:
   bambulabs-exporter:
     image: bambulabs-exporter
+    env_file: .env
     build: .
     container_name: bambulabs-exporter
     ports:
