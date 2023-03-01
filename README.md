@@ -33,6 +33,8 @@ This is an MQTT Exporter powered by Go & Docker.
 
 ## Steps to run the project
 ```
+git clone
+cd Bambulabs-Exporter
 docker-compose up -d
 ```
 
