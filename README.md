@@ -2,6 +2,7 @@
 # BAMBULABS EXPORTER
 This is an exporter for all the data peeps that want to know all the things about their awesome BambuLabs 3D Printer. This was only tested on the X1C.
 
+![alt text](.bmb.png)
 
 ### Prometheus Metrics Available
 
