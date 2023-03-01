@@ -31,6 +31,21 @@ This is an MQTT Exporter powered by Go & Docker.
 | nozzle_temper | Nozzle Temperature Metric | |
 
 
+## .env File
+Create an .env file.
+Add the Printer IP you configured when you setup your printer.
+Add the Printer Password from the Printer Network Settings Menu.
+Add the MQTT_TOPIC for your printer. This can be achived by loading up an MQTT Application such as MQTT Explorer. 
+- You must Enable (TLS), use the protocol mqtt://, add the port 8883, username bblp, and the password on your printer. 
+- *Please note you can regenerate a password on the device manually.
+- Collect the MQTT_TOPIC by expanding the "Device", "Serial Number", "Report". The result should look similar to "device/00M00A2B08124765/report"
+
+```
+BAMBU_PRINTER_IP=""
+USERNAME="bblp"
+PASSWORD=""
+MQTT_TOPIC="device/00M00A2B0809765/report"
+```
 
 
 ## Steps to run the project
