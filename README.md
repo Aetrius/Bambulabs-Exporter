@@ -34,8 +34,11 @@ This is an MQTT Exporter powered by Go & Docker.
 
 ## Steps to run the project
 Step 1: Create the .env file (see the step below.)
+
 Step 2: Clone the Repo
+
 Step 3: Change Directory into the cloned repo.
+
 Step 4: Run Docker Compose 
 
 ### .env File
