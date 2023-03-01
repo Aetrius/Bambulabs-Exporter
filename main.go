@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -38,7 +39,8 @@ var chamber_temper float64
 var cooling_fan_speed float64
 var fail_reason float64
 var fan_gear float64
-var gcode_state string
+
+// var gcode_state string
 var mc_percent float64
 var mc_print_error_code float64
 var mc_print_stage float64
@@ -46,6 +48,8 @@ var mc_print_sub_stage float64
 var mc_remaining_time float64
 var nozzle_target_temper float64
 var nozzle_temper float64
+
+var unmarshal bool
 
 type bambulabsCollector struct {
 	amsHumidityMetric     *prometheus.Desc
@@ -58,6 +62,16 @@ type bambulabsCollector struct {
 	bigFan2SpeedMetric    *prometheus.Desc
 	chamberTemperMetric   *prometheus.Desc
 	coolingFanSpeedMetric *prometheus.Desc
+	failReasonMetric      *prometheus.Desc
+	fanGearMetric         *prometheus.Desc
+	//gCodeStateMetric       *prometheus.Desc
+	mcPercentMetric          *prometheus.Desc
+	mcPrintErrorCodeMetric   *prometheus.Desc
+	mcPrintStageMetric       *prometheus.Desc
+	mcPrintSubStageMetric    *prometheus.Desc
+	mcRemainingTimeMetric    *prometheus.Desc
+	nozzleTargetTemperMetric *prometheus.Desc
+	nozzleTemperMetric       *prometheus.Desc
 }
 
 func env(key string) string {
@@ -115,6 +129,42 @@ func newBambulabsCollector() *bambulabsCollector {
 			"Cooling Fan Speed",
 			nil, nil,
 		),
+		failReasonMetric: prometheus.NewDesc("fail_reason_metric",
+			"Print Failure Reason",
+			nil, nil,
+		),
+		fanGearMetric: prometheus.NewDesc("fan_gear_metric",
+			"Fan Gear",
+			nil, nil,
+		),
+		mcPercentMetric: prometheus.NewDesc("mc_percent_metric",
+			"Percentage of Progress of print",
+			nil, nil,
+		),
+		mcPrintErrorCodeMetric: prometheus.NewDesc("mc_print_error_code_metric",
+			"Print Progress Error Code",
+			nil, nil,
+		),
+		mcPrintStageMetric: prometheus.NewDesc("mc_print_stage_metric",
+			"Print Progress Stage",
+			nil, nil,
+		),
+		mcPrintSubStageMetric: prometheus.NewDesc("mc_print_sub_stage_metric",
+			"Print Progress Sub Stage",
+			nil, nil,
+		),
+		mcRemainingTimeMetric: prometheus.NewDesc("mc_remaining_time_metric",
+			"Print Progress Remaining Time in minutes",
+			nil, nil,
+		),
+		nozzleTargetTemperMetric: prometheus.NewDesc("nozzle_target_temper_metric",
+			"Nozzle Target Temperature Metric",
+			nil, nil,
+		),
+		nozzleTemperMetric: prometheus.NewDesc("nozzle_temper_metric",
+			"Nozzle Temperature Metric",
+			nil, nil,
+		),
 	}
 }
 
@@ -133,6 +183,15 @@ func (collector *bambulabsCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- collector.bigFan2SpeedMetric
 	ch <- collector.chamberTemperMetric
 	ch <- collector.coolingFanSpeedMetric
+	ch <- collector.failReasonMetric
+	ch <- collector.fanGearMetric
+	ch <- collector.mcPercentMetric
+	ch <- collector.mcPrintErrorCodeMetric
+	ch <- collector.mcPrintStageMetric
+	ch <- collector.mcPrintSubStageMetric
+	ch <- collector.mcRemainingTimeMetric
+	ch <- collector.nozzleTargetTemperMetric
+	ch <- collector.nozzleTemperMetric
 }
 
 // Collect implements required collect function for all prometheus collectors
@@ -157,19 +216,19 @@ func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	sub(client)
-	defer client.Disconnect(250)
-	defer token.Done()
+	//defer client.Disconnect(250)
+	//defer token.Done()
 	token.Wait()
 	time.Sleep(time.Second)
+	defer client.Disconnect(250)
+	defer token.Done()
 	//fmt.Printf("\nHumidity: %s", data.Print.Ams.Ams[0].Humidity)
-	if humidity != 0 {
-		fmt.Println("\nHumidity: ", humidity)
+
+	if reflect.ValueOf(data).IsZero() == true {
+		//fmt.Println("\nHumidity: ", ams_temp)
 		humidity_1 := prometheus.MustNewConstMetric(collector.amsHumidityMetric, prometheus.GaugeValue, humidity)
 		ch <- humidity_1
-	}
 
-	if ams_temp != 0 {
-		//fmt.Println("\nHumidity: ", ams_temp)
 		ams_temp_1 := prometheus.MustNewConstMetric(collector.amsTempMetric, prometheus.GaugeValue, ams_temp)
 		ch <- ams_temp_1
 
@@ -197,6 +256,37 @@ func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 		cooling_fan_speed_1 := prometheus.MustNewConstMetric(collector.coolingFanSpeedMetric, prometheus.GaugeValue, cooling_fan_speed)
 		ch <- cooling_fan_speed_1
 
+		fail_reason_metric_1 := prometheus.MustNewConstMetric(collector.failReasonMetric, prometheus.GaugeValue, fail_reason)
+		ch <- fail_reason_metric_1
+
+		fan_gear_metric_1 := prometheus.MustNewConstMetric(collector.fanGearMetric, prometheus.GaugeValue, fan_gear)
+		ch <- fan_gear_metric_1
+
+		mc_percent_1 := prometheus.MustNewConstMetric(collector.mcPercentMetric, prometheus.GaugeValue, mc_percent)
+		ch <- mc_percent_1
+
+		mc_print_error_code_1 := prometheus.MustNewConstMetric(collector.mcPrintErrorCodeMetric, prometheus.GaugeValue, mc_print_error_code)
+		ch <- mc_print_error_code_1
+
+		mc_print_stage_metric_1 := prometheus.MustNewConstMetric(collector.mcPrintStageMetric, prometheus.GaugeValue, mc_print_stage)
+		ch <- mc_print_stage_metric_1
+
+		mc_print_sub_stage_metric_1 := prometheus.MustNewConstMetric(collector.mcPrintSubStageMetric, prometheus.GaugeValue, mc_print_sub_stage)
+		ch <- mc_print_sub_stage_metric_1
+
+		mc_remaining_time_metric_1 := prometheus.MustNewConstMetric(collector.mcRemainingTimeMetric, prometheus.GaugeValue, mc_remaining_time)
+		ch <- mc_remaining_time_metric_1
+
+		nozzle_target_temper_metric_1 := prometheus.MustNewConstMetric(collector.nozzleTargetTemperMetric, prometheus.GaugeValue, nozzle_target_temper)
+		ch <- nozzle_target_temper_metric_1
+
+		nozzle_temper_metric_1 := prometheus.MustNewConstMetric(collector.nozzleTemperMetric, prometheus.GaugeValue, nozzle_temper)
+		ch <- nozzle_temper_metric_1
+
+		client.Disconnect(1)
+		token.Done()
+	} else {
+		fmt.Printf("\ndata might be empty")
 	}
 
 }
@@ -206,36 +296,56 @@ var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 	s := msg.Payload()
 	data := BambuLabsX1C{}
 	json.Unmarshal([]byte(s), &data)
+
+	//if reflect.ValueOf(data).IsZero() == false {
 	//fmt.Printf("\nHumidity: %s", data.Print.Ams.Ams[0].Humidity)
-	humidity, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Humidity, 64)
-	ams_temp, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Temp, 64)
-	ams_bed_temp, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Tray[0].BedTemp, 64)
-	layer_number = float64(data.Print.LayerNum)
-	print_error = float64(data.Print.PrintError)
-	wifi_signal, _ = strconv.ParseFloat(strings.ReplaceAll(data.Print.WifiSignal, "dBm", ""), 64)
-	big_fan1_speed, _ = strconv.ParseFloat(data.Print.BigFan1Speed, 64)
-	big_fan2_speed, _ = strconv.ParseFloat(data.Print.BigFan2Speed, 64)
-	chamber_temper = data.Print.ChamberTemper
-	cooling_fan_speed, _ = strconv.ParseFloat(data.Print.CoolingFanSpeed, 64)
-	//fmt.Printf()
+	if data.Print.WifiSignal == "" {
+		//fmt.Println("\nWifi Signal was empty")
+	} else {
+
+		humidity, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Humidity, 64)
+		ams_temp, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Temp, 64)
+		ams_bed_temp, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Tray[0].BedTemp, 64)
+		layer_number = float64(data.Print.LayerNum)
+		print_error = float64(data.Print.PrintError)
+		wifi_signal, _ = strconv.ParseFloat(strings.ReplaceAll(data.Print.WifiSignal, "dBm", ""), 64)
+		big_fan1_speed, _ = strconv.ParseFloat(data.Print.BigFan1Speed, 64)
+		big_fan2_speed, _ = strconv.ParseFloat(data.Print.BigFan2Speed, 64)
+		chamber_temper = data.Print.ChamberTemper
+		cooling_fan_speed, _ = strconv.ParseFloat(data.Print.CoolingFanSpeed, 64)
+		fail_reason, _ = strconv.ParseFloat(data.Print.FailReason, 64)
+		fan_gear = float64(data.Print.FanGear)
+		mc_percent = float64(data.Print.McPercent)
+		mc_print_error_code, _ = strconv.ParseFloat(data.Print.McPrintErrorCode, 64)
+		mc_print_stage, _ = strconv.ParseFloat(data.Print.McPrintStage, 64)
+		mc_print_sub_stage = float64(data.Print.McPrintSubStage)
+		mc_remaining_time = float64(data.Print.McRemainingTime)
+		nozzle_temper = float64(data.Print.NozzleTemper)
+
+	}
 }
 
 var connectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
-	fmt.Println("Connected")
+	dt := time.Now()
+	fmt.Println("\nConnected: ", dt.String())
 }
 
 var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err error) {
-	fmt.Printf("Connect lost: %+v", err)
+	fmt.Printf("\nConnect lost: %+v", err)
 }
 
 func main() {
+	dt := time.Now()
+	fmt.Printf("\nStarting Exporter: ", dt.String())
 	godotenv.Load()
 
 	broker = env("BAMBU_PRINTER_IP")
 	username = env("USERNAME")
 	password = env("PASSWORD")
 	mqtt_topic = env("MQTT_TOPIC")
+	fmt.Printf("\nEnv Vars Loaded")
 
+	fmt.Printf("\nRegistering collector")
 	bambulabs := newBambulabsCollector()
 	prometheus.MustRegister(bambulabs)
 
