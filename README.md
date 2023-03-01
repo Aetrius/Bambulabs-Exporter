@@ -54,7 +54,7 @@ Add the MQTT_TOPIC for your printer. This can be achived by loading up an MQTT A
 BAMBU_PRINTER_IP=""
 USERNAME="bblp"
 PASSWORD=""
-MQTT_TOPIC="device/00M00A2B0809765/report"
+MQTT_TOPIC="device/00M00A2B08124765/report"
 ```
 
 ```
