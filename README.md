@@ -6,6 +6,7 @@ This is an exporter for all the data peeps that want to know all the things abou
 
 ## GO, DOCKER, & PROMETHEUS ⚡ Powered
 This is an MQTT Exporter powered by Go & Docker. 
+https://hub.docker.com/r/aetrius/bambulabs-exporter
 
 ### Prometheus Metrics Available
 
