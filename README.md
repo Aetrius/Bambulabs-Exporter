@@ -31,6 +31,11 @@ This is an exporter for all the data peeps that want to know all the things abou
 ## GO & DOCKER ⚡ Powered
 This is an MQTT Exporter powered by Go & Docker. 
 
+## Steps to run the project
+```
+docker-compose up -d
+```
+
 ## (Important Notes)
 You will need to likely run an MQTT program to test your connection. You can pull the password from the printer interface manually, or reset it on the printer itself.
 
