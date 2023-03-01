@@ -31,7 +31,14 @@ This is an MQTT Exporter powered by Go & Docker.
 | nozzle_temper | Nozzle Temperature Metric | |
 
 
-## .env File
+
+## Steps to run the project
+Step 1: Create the .env file (see the step below.)
+Step 2: Clone the Repo
+Step 3: Change Directory into the cloned repo.
+Step 4: Run Docker Compose 
+
+### .env File
 Create an .env file.
 Add the Printer IP you configured when you setup your printer.
 Add the Printer Password from the Printer Network Settings Menu.
@@ -47,13 +54,12 @@ PASSWORD=""
 MQTT_TOPIC="device/00M00A2B0809765/report"
 ```
 
-
-## Steps to run the project
 ```
 git clone
 cd Bambulabs-Exporter
 docker-compose up -d
 ```
+
 
 ## (Important Notes)
 You will need to likely run an MQTT program to test your connection. You can pull the password from the printer interface manually, or reset it on the printer itself.
