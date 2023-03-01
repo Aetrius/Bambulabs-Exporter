@@ -360,7 +360,7 @@ func newTLSConfig() *tls.Config {
 
 func sub(client mqtt.Client) {
 	// Subscribe to the LWT connection status
-	topic := "device/00M00A2B0809765/report"
+	topic := mqtt_topic
 	token := client.Subscribe(topic, 1, nil)
 	token.Wait()
 	fmt.Printf("Subscribed to LWT %s", topic)
