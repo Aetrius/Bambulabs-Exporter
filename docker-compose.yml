@@ -1,9 +1,9 @@
 version: "2.0"
 services:
-  bambulabs-exporter:
-    image: bambulabs-exporter
+  bambulabs-aetrius-exporter:
+    image: bambulabs-aetrius-exporter
     env_file: .env
     build: .
-    container_name: bambulabs-exporter
+    container_name: bambulabs-aetrius-exporter
     ports:
       - "9101:9101"
