@@ -6,7 +6,7 @@ This is an exporter for all the data peeps that want to know all the things abou
 
 ## Prereqs
 This project assumes you have a Grafana/Prometheus Setup. You would point your Prometheus instance to the (host:9101) endpoint. This is not a tutorial on Prometheus / Grafana.
-I'll look at adding additional docker containers to the docker-compose file along with the Grafana dashboard in the image below.
+I'll look at adding additional docker containers to the docker-compose file along with the Grafana dashboard in the image below. This program/container would run on a virtual host, raspberry pi, or a computer that has access to the Bambu printer. IT is possible to port forward your printer and host this in AWS or offpremise.
 
 ## GO, DOCKER, & PROMETHEUS ⚡ Powered
 This is an MQTT Exporter powered by Go & Docker. 
