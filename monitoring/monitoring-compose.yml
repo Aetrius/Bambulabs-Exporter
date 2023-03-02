@@ -46,7 +46,7 @@ services:
 
   bambulabs-aetrius-exporter:
     image: aetrius/bambulabs-exporter
-    env_file: .env
+    env_file: ../.env
     container_name: bambulabs-aetrius-exporter
     ports:
       - "9101:9101"
