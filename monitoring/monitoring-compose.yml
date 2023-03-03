@@ -1,0 +1,54 @@
+version: '3.7'
+
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
+
+networks:
+  bambulabs-exporter_default:
+    driver: bridge
+    external: true
+
+services:
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.36.2
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--enable-feature=remote-write-receiver'
+    ports:
+      - "9090:9090"
+    networks:
+      - bambulabs-exporter_default
+    restart: always
+
+    
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    env_file:
+      - ./grafana/config.monitoring
+    ports:
+      - "3000:3000"
+    networks:
+      - bambulabs-exporter_default
+    restart: always
+
+  bambulabs-aetrius-exporter:
+    image: aetrius/bambulabs-exporter
+    env_file: ../.env
+    container_name: bambulabs-aetrius-exporter
+    ports:
+      - "9101:9101"
+    networks:
+      - bambulabs-exporter_default

@@ -6,3 +6,10 @@ services:
     container_name: bambulabs-aetrius-exporter
     ports:
       - "9101:9101"
+    networks:
+      - monitoring
+
+
+networks:
+  monitoring:
+    driver: bridge
