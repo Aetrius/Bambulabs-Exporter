@@ -35,7 +35,7 @@ https://hub.docker.com/r/aetrius/bambulabs-exporter
 | nozzle_target_temper |Nozzle Target Temperature Metric | |
 | nozzle_temper | Nozzle Temperature Metric | |
 
-## Tutorial (for Monitoring stack exporter + prometheus + grafana)
+## Tutorial (for Monitoring stack (prometheus + grafana) + Bambulabs exporter)
 (https://www.youtube.com/watch?v=VQSAEKGYJBQ)](https://www.youtube.com/watch?v=VQSAEKGYJBQ)
 (Use the steps below if you just want to run the exporter and assuming you have a Prometheus/Grafana stack already).
 
