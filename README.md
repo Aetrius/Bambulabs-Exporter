@@ -18,11 +18,14 @@ This is an MQTT Exporter powered by Go & Docker.
 https://hub.docker.com/r/aetrius/bambulabs-exporter
 
 ### Prometheus Metrics Available
+* - annotates recent changes or additions
 
 | Metric   | Description | Examples |
 | ------------- | ------------- |  ------------- |
-| humidity  | Humdity of the Enclosure  | |
-| ams_temp  | Temperature of the Bambu Bed  | |
+| ams_humidity  | Humdity of the Enclosure, includes the AMS Number 0-many  | |
+| ams_temp  | *Temperature of the AMS, includes the AMS Number 0-many | |
+| ams_tray_color | *Filament color in the tray of the AMS, includes the AMS Number 0-many & Tray Numbers 0-4 | |
+| ams_bed_temp | *Temperature of the AMS bed, includes the AMS Number 0-many & Tray Numbers 0-4 | |
 | layer_number | GCode Layer number  | |
 | print_error | Print Error Code Detected  | |
 | wifi_signal | Wifi Signal in dBm  | |
@@ -84,8 +87,15 @@ You will need to likely run an MQTT program to test your connection. You can pul
 ### Prometheus Ingestion
 Setup prometheus to scrape the node and setup the ports to pull from port 9101.
 
+### Bugs
+3/4/2023 - Possible bug with docker networking on monitor-compose. Added solution to readme. Pending review.
+
+### Feature Changes
+3/4/2023 - Added new Metrics ams_humidity, ams_temp, ams_tray_color, ams_bed_temp. These include ams number and tray numbers to be dynamic depending on how many AMS's are included.
+
 ### Future Development
 Add Kubernetes Configs
+Add Grafana Dashboard for AMS
 
 ### Credit
 ```Give me a shout if you utilize this code base (Anywhere!)```
