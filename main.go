@@ -20,6 +20,8 @@ import (
 )
 
 var data BambuLabsX1C
+var datav2 BambuLabsX1C
+
 var username string
 var password string
 var broker string
@@ -27,7 +29,7 @@ var mqtt_topic string
 
 var humidity float64
 var ams_temp float64
-var ams_bed_temp float64
+//var ams_bed_temp float64
 var layer_number float64
 var print_error float64
 
@@ -48,6 +50,7 @@ var mc_print_sub_stage float64
 var mc_remaining_time float64
 var nozzle_target_temper float64
 var nozzle_temper float64
+
 
 var unmarshal bool
 
@@ -99,7 +102,7 @@ func newBambulabsCollector() *bambulabsCollector {
 		),
 		amsBedTempMetric: prometheus.NewDesc("ams_bed_temp_metric",
 			"temperature of the ams bed",
-			nil, nil,
+			[]string{"ams_number", "tray_number"}, nil,
 		),
 		layerNumberMetric: prometheus.NewDesc("layer_number_metric",
 			"layer number of the print head in gcode",
@@ -225,6 +228,14 @@ func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 	//fmt.Printf("\nHumidity: %s", data.Print.Ams.Ams[0].Humidity)
 
 	if reflect.ValueOf(data).IsZero() == true {
+		for x := 0; x < len(datav2.Print.Ams.Ams); x++ {
+			for i := 0; i < len(datav2.Print.Ams.Ams[x].Tray); i++ {
+				amsBedTempMetric, _ := strconv.ParseFloat(datav2.Print.Ams.Ams[x].Tray[i].BedTemp, 64)
+				ams_bed_temp_1 := prometheus.MustNewConstMetric(collector.amsBedTempMetric, prometheus.GaugeValue, amsBedTempMetric, strconv.Itoa(x), strconv.Itoa(i))
+				ch <- ams_bed_temp_1
+			}
+		}
+
 		//fmt.Println("\nHumidity: ", ams_temp)
 		humidity_1 := prometheus.MustNewConstMetric(collector.amsHumidityMetric, prometheus.GaugeValue, humidity)
 		ch <- humidity_1
@@ -232,8 +243,8 @@ func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 		ams_temp_1 := prometheus.MustNewConstMetric(collector.amsTempMetric, prometheus.GaugeValue, ams_temp)
 		ch <- ams_temp_1
 
-		ams_bed_temp_1 := prometheus.MustNewConstMetric(collector.amsBedTempMetric, prometheus.GaugeValue, ams_bed_temp)
-		ch <- ams_bed_temp_1
+		// ams_bed_temp_1 := prometheus.MustNewConstMetric(collector.amsBedTempMetric, prometheus.GaugeValue, ams_bed_temp)
+		// ch <- ams_bed_temp_1
 
 		layer_number_1 := prometheus.MustNewConstMetric(collector.layerNumberMetric, prometheus.GaugeValue, layer_number)
 		ch <- layer_number_1
@@ -302,10 +313,11 @@ var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 	if data.Print.WifiSignal == "" {
 		//fmt.Println("\nWifi Signal was empty")
 	} else {
-
+		datav2 = data
+		
 		humidity, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Humidity, 64)
 		ams_temp, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Temp, 64)
-		ams_bed_temp, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Tray[0].BedTemp, 64)
+		//ams_bed_temp, _ = strconv.ParseFloat(data.Print.Ams.Ams[0].Tray[0].BedTemp, 64)
 		layer_number = float64(data.Print.LayerNum)
 		print_error = float64(data.Print.PrintError)
 		wifi_signal, _ = strconv.ParseFloat(strings.ReplaceAll(data.Print.WifiSignal, "dBm", ""), 64)
