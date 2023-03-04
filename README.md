@@ -44,12 +44,14 @@ https://hub.docker.com/r/aetrius/bambulabs-exporter
 | nozzle_temper | Nozzle Temperature Metric | |
 
 ## Tutorial (for Monitoring stack (prometheus + grafana) + Bambulabs exporter)
-(https://www.youtube.com/watch?v=VQSAEKGYJBQ)](https://www.youtube.com/watch?v=VQSAEKGYJBQ)
-(Use the steps below if you just want to run the exporter and assuming you have a Prometheus/Grafana stack already).
+- (https://www.youtube.com/watch?v=VQSAEKGYJBQ)](https://www.youtube.com/watch?v=VQSAEKGYJBQ)
+- (Use the steps below if you just want to run the exporter and assuming you have a Prometheus/Grafana stack already).
 - If your monitor-compose.yml file will not start without a docker network. Run the following command 'docker network create bambulabs-exporter_default'
 
+---
 
 ## Steps to run the project
+``` 
 Step 1: Create the .env file (see the step below.)
 
 Step 2: Clone the Repo
@@ -57,6 +59,9 @@ Step 2: Clone the Repo
 Step 3: Change Directory into the cloned repo.
 
 Step 4: Run Docker Compose 
+```
+
+---
 
 ### .env File
 Create an .env file.
@@ -80,27 +85,43 @@ cd Bambulabs-Exporter
 docker-compose up -d
 ```
 
+---
 
 ## (Important Notes)
 You will need to likely run an MQTT program to test your connection. You can pull the password from the printer interface manually, or reset it on the printer itself.
 
+---
+
 ### Prometheus Ingestion
 Setup prometheus to scrape the node and setup the ports to pull from port 9101.
 
+---
+
 ### Bugs
-3/4/2023 - Possible bug with docker networking on monitor-compose. Added solution to readme. Pending review.
+- 3/4/2023 - Possible bug with docker networking on monitor-compose. Added solution to readme. Pending review.
+
+---
 
 ### Feature Changes
-3/4/2023 - Added new Metrics ams_humidity, ams_temp, ams_tray_color, ams_bed_temp. These include ams number and tray numbers to be dynamic depending on how many AMS's are included.
+- 3/4/2023 - Added new Metrics ams_humidity, ams_temp, ams_tray_color, ams_bed_temp. These include ams number and tray numbers to be dynamic depending on how many AMS's are included.
+
+---
 
 ### Future Development
-Add Kubernetes Configs
-Add Grafana Dashboard for AMS
+- Add Kubernetes Configs
+- Add Grafana Dashboard changes for AMS
+
+---
 
 ### Credit
-```Give me a shout if you utilize this code base (Anywhere!)```
+```
+Give me a shout if you utilize this code base (Anywhere!)
+```
 
+---
 
 ### Support Questions 
 
-```tylerwbennet@gmail.com```
+```
+tylerwbennet@gmail.com
+```
