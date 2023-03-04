@@ -58,6 +58,7 @@ type bambulabsCollector struct {
 	amsHumidityMetric     *prometheus.Desc
 	amsTempMetric         *prometheus.Desc
 	amsBedTempMetric      *prometheus.Desc
+	amsColorMetric 		  *prometheus.Desc //Custom color metric with multiple labels
 	layerNumberMetric     *prometheus.Desc
 	printErrorMetric      *prometheus.Desc
 	wifiSignalMetric      *prometheus.Desc
@@ -99,6 +100,10 @@ func newBambulabsCollector() *bambulabsCollector {
 		amsTempMetric: prometheus.NewDesc("ams_temp_metric",
 			"temperature of the ams",
 			[]string{"ams_number"}, nil,
+		),
+		amsColorMetric: prometheus.NewDesc("ams_color_metric",
+		"ID of the ams with color hex values",
+		[]string{"ams_number", "tray_number", "tray_color", "tray_type"}, nil,
 		),
 		amsBedTempMetric: prometheus.NewDesc("ams_bed_temp_metric",
 			"temperature of the ams bed",
@@ -178,6 +183,7 @@ func (collector *bambulabsCollector) Describe(ch chan<- *prometheus.Desc) {
 	//Update this section with the each metric you create for a given collector
 	ch <- collector.amsHumidityMetric
 	ch <- collector.amsTempMetric
+	ch <- collector.amsColorMetric
 	ch <- collector.amsBedTempMetric
 	ch <- collector.layerNumberMetric
 	ch <- collector.printErrorMetric
@@ -248,6 +254,11 @@ func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 				ams_bed_temp_1 := prometheus.MustNewConstMetric(collector.amsBedTempMetric, prometheus.GaugeValue, ams_bed_temp, strconv.Itoa(x), strconv.Itoa(i))
 				ch <- ams_bed_temp_1
 
+				ams_tray_color := datav2.Print.Ams.Ams[x].Tray[i].TrayColor
+				ams_tray_type := datav2.Print.Ams.Ams[x].Tray[i].TrayType
+				//ams_tray_id, _ := strconv.ParseFloat(datav2.Print.Ams.Ams[x].Tray[i].ID, 64)
+				ams_color_1 := prometheus.MustNewConstMetric(collector.amsColorMetric, prometheus.GaugeValue, 1, strconv.Itoa(x), strconv.Itoa(i), ams_tray_color, ams_tray_type)
+				ch <- ams_color_1
 
 			}
 		}
