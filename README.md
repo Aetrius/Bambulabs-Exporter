@@ -18,7 +18,7 @@ This is an MQTT Exporter powered by Go & Docker.
 https://hub.docker.com/r/aetrius/bambulabs-exporter
 
 ### Prometheus Metrics Available
-* - annotates recent changes or additions
+- `*annotates recent changes or additions`
 
 | Metric   | Description | Examples |
 | ------------- | ------------- |  ------------- |
