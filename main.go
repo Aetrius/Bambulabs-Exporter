@@ -27,9 +27,9 @@ var password string
 var broker string
 var mqtt_topic string
 
-//var humidity float64
-//var ams_temp float64
-//var ams_bed_temp float64
+// var humidity float64
+// var ams_temp float64
+// var ams_bed_temp float64
 var layer_number float64
 var print_error float64
 
@@ -51,14 +51,13 @@ var mc_remaining_time float64
 var nozzle_target_temper float64
 var nozzle_temper float64
 
-
 var unmarshal bool
 
 type bambulabsCollector struct {
 	amsHumidityMetric     *prometheus.Desc
 	amsTempMetric         *prometheus.Desc
 	amsBedTempMetric      *prometheus.Desc
-	amsColorMetric 		  *prometheus.Desc //Custom color metric with multiple labels
+	amsColorMetric        *prometheus.Desc //Custom color metric with multiple labels
 	layerNumberMetric     *prometheus.Desc
 	printErrorMetric      *prometheus.Desc
 	wifiSignalMetric      *prometheus.Desc
@@ -101,9 +100,9 @@ func newBambulabsCollector() *bambulabsCollector {
 			"temperature of the ams",
 			[]string{"ams_number"}, nil,
 		),
-		amsColorMetric: prometheus.NewDesc("ams_color_metric",
-		"ID of the ams with color hex values",
-		[]string{"ams_number", "tray_number", "tray_color", "tray_type"}, nil,
+		amsColorMetric: prometheus.NewDesc("ams_tray_color_metric",
+			"ID of the ams with color hex values",
+			[]string{"ams_number", "tray_number", "tray_color", "tray_type"}, nil,
 		),
 		amsBedTempMetric: prometheus.NewDesc("ams_bed_temp_metric",
 			"temperature of the ams bed",
@@ -236,7 +235,6 @@ func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 	if reflect.ValueOf(data).IsZero() == true {
 		//Loop through the AMS
 		for x := 0; x < len(datav2.Print.Ams.Ams); x++ {
-			
 
 			ams_temp, _ := strconv.ParseFloat(datav2.Print.Ams.Ams[x].Temp, 64)
 			ams_temp_1 := prometheus.MustNewConstMetric(collector.amsTempMetric, prometheus.GaugeValue, ams_temp, strconv.Itoa(x))
@@ -246,10 +244,9 @@ func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 			humidity_1 := prometheus.MustNewConstMetric(collector.amsHumidityMetric, prometheus.GaugeValue, humidity, strconv.Itoa(x))
 			ch <- humidity_1
 
-
 			// loop through the Trays
 			for i := 0; i < len(datav2.Print.Ams.Ams[x].Tray); i++ {
-				
+
 				ams_bed_temp, _ := strconv.ParseFloat(datav2.Print.Ams.Ams[x].Tray[i].BedTemp, 64)
 				ams_bed_temp_1 := prometheus.MustNewConstMetric(collector.amsBedTempMetric, prometheus.GaugeValue, ams_bed_temp, strconv.Itoa(x), strconv.Itoa(i))
 				ch <- ams_bed_temp_1
