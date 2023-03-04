@@ -103,7 +103,7 @@ Setup prometheus to scrape the node and setup the ports to pull from port 9101.
 ---
 
 ### Feature Changes
-- 3/4/2023 - Added new Metrics ams_humidity, ams_temp, ams_tray_color, ams_bed_temp. These include ams number and tray numbers to be dynamic depending on how many AMS's are included.
+- 3/4/2023 - Added new Metrics ams_humidity, ams_temp, ams_tray_color, ams_bed_temp. These include ams number and tray numbers to be dynamic depending on how many AMS's are included. Will push new container to dockerhub later today 3/4/23
 
 ---
 
