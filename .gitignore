@@ -1,3 +1,5 @@
 vendor/
 .temp
 .env
+.env-local
+.env-empty
