@@ -16,27 +16,27 @@ https://hub.docker.com/r/aetrius/bambulabs-exporter
 
 | Metric   | Description | Examples |
 | ------------- | ------------- |  ------------- |
-| ams_humidity  | Humdity of the Enclosure, includes the AMS Number 0-many  | |
-| ams_temp  | *Temperature of the AMS, includes the AMS Number 0-many | |
-| ams_tray_color | *Filament color in the tray of the AMS, includes the AMS Number 0-many & Tray Numbers 0-4 | |
-| ams_bed_temp | *Temperature of the AMS bed, includes the AMS Number 0-many & Tray Numbers 0-4 | |
+| ams_humidity  | Humdity of the Enclosure, includes the AMS Number 0-many  |ams_humidity_metric{ams_number="0"} 4 |
+| ams_temp  | *Temperature of the AMS, includes the AMS Number 0-many | ams_temp_metric{ams_number="0"} 30.7 |
+| ams_tray_color | *Filament color in the tray of the AMS, includes the AMS Number 0-many & Tray Numbers 0-4 | ams_tray_color_metric{ams_number="0",tray_color="AF7933FF",tray_number="0",tray_type="PLA"} 1 |
+| ams_bed_temp | *Temperature of the AMS bed, includes the AMS Number 0-many & Tray Numbers 0-4 | ams_bed_temp_metric{ams_number="0",tray_number="0"} 0 |
 | layer_number | GCode Layer number  | |
 | print_error | Print Error Code Detected  | |
 | wifi_signal | Wifi Signal in dBm  | |
-| big_fan1_speed | Big1 Fan Speed  | |
-| big_fan2_speed | Big2 Fan Speed  | |
-| chamber_temper | Temperature of the Bambu Enclosure  | |
-| cooling_fan_speed | Print Head Cooling Fan Speed  | |
-| fail_reason | Failure Print Reason Code  | |
-| fan_gear | Fan Gear   | |
-| mc_percent | Print Progress in Percentage  | |
-| mc_print_error_code | Print Progress Error Code | |
-| mc_print_stage | Print Progress Stage | |
-| mc_print_sub_stage | Print Progress Sub Stage | |
-| mc_remaining_time | Print Progress Remaining Time in minutes  | |
-| nozzle_target_temper |Nozzle Target Temperature Metric | |
-| nozzle_temper | Nozzle Temperature Metric | |
-
+| big_fan1_speed | Big1 Fan Speed  | big_fan1_speed_metric 0 |
+| big_fan2_speed | Big2 Fan Speed  | big_fan2_speed_metric 0 |
+| chamber_temper | Temperature of the Bambu Enclosure  | chamber_temper_metric 30 |
+| cooling_fan_speed | Print Head Cooling Fan Speed  | cooling_fan_speed_metric 0 |
+| fail_reason | Failure Print Reason Code  | fail_reason_metric 0 |
+| fan_gear | Fan Gear   | fan_gear_metric 0 |
+| mc_percent | Print Progress in Percentage  | mc_percent_metric 36 |
+| mc_print_error_code | Print Progress Error Code | mc_print_error_code_metric 0 |
+| mc_print_stage | Print Progress Stage | mc_print_stage_metric 2 |
+| mc_print_sub_stage | Print Progress Sub Stage | mc_print_sub_stage_metric 4 |
+| mc_remaining_time | Print Progress Remaining Time in minutes  | mc_remaining_time_metric 1973 |
+| nozzle_target_temper |Nozzle Target Temperature Metric | nozzle_target_temper_metric 0 |
+| nozzle_temper | Nozzle Temperature Metric | nozzle_temper_metric 221 |
+| print_error | Print Error reported by the Control board | print_error_metric 0 |
 ---
 
 ## Steps to run the exporter
