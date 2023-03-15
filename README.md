@@ -6,14 +6,9 @@ This is an exporter for all the data peeps that want to know all the things abou
 1.04.01.00`
 
 
-![alt text](./images/bmb2.png)
-![alt text](./images/bmb3.png)
-
-
 ## GO, DOCKER, & PROMETHEUS ⚡ Powered
 This is an MQTT Exporter powered by Go & Docker. 
 https://hub.docker.com/r/aetrius/bambulabs-exporter
-
 
 
 ### Prometheus Metrics Available
@@ -45,7 +40,7 @@ https://hub.docker.com/r/aetrius/bambulabs-exporter
 ---
 
 ## Steps to run the exporter
-Step 0: [Prereqs](##-step-0:-prereqs)
+Step 0: [Prereqs](## Step 0: Prereqs)
 
 Step 1: [Create the .env file](##-Step-1:-.env-file)
 
