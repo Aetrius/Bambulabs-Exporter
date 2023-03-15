@@ -6,57 +6,53 @@ This is an exporter for all the data peeps that want to know all the things abou
 1.04.01.00`
 
 
-![alt text](./images/bmb2.png)
-![alt text](./images/bmb3.png)
-
-
 ## GO, DOCKER, & PROMETHEUS ⚡ Powered
 This is an MQTT Exporter powered by Go & Docker. 
 https://hub.docker.com/r/aetrius/bambulabs-exporter
 
 
-
 ### Prometheus Metrics Available
 - `*annotates recent changes or additions`
 
+[Sample Metrics Here](sample.md)
 | Metric   | Description | Examples |
 | ------------- | ------------- |  ------------- |
-| ams_humidity  | Humdity of the Enclosure, includes the AMS Number 0-many  | |
-| ams_temp  | *Temperature of the AMS, includes the AMS Number 0-many | |
-| ams_tray_color | *Filament color in the tray of the AMS, includes the AMS Number 0-many & Tray Numbers 0-4 | |
-| ams_bed_temp | *Temperature of the AMS bed, includes the AMS Number 0-many & Tray Numbers 0-4 | |
-| layer_number | GCode Layer number  | |
-| print_error | Print Error Code Detected  | |
-| wifi_signal | Wifi Signal in dBm  | |
-| big_fan1_speed | Big1 Fan Speed  | |
-| big_fan2_speed | Big2 Fan Speed  | |
-| chamber_temper | Temperature of the Bambu Enclosure  | |
-| cooling_fan_speed | Print Head Cooling Fan Speed  | |
-| fail_reason | Failure Print Reason Code  | |
-| fan_gear | Fan Gear   | |
-| mc_percent | Print Progress in Percentage  | |
-| mc_print_error_code | Print Progress Error Code | |
-| mc_print_stage | Print Progress Stage | |
-| mc_print_sub_stage | Print Progress Sub Stage | |
-| mc_remaining_time | Print Progress Remaining Time in minutes  | |
-| nozzle_target_temper |Nozzle Target Temperature Metric | |
-| nozzle_temper | Nozzle Temperature Metric | |
+| ams_humidity_metric  | Humdity of the Enclosure, includes the AMS Number 0-many  | |
+| ams_temp_metric  | *Temperature of the AMS, includes the AMS Number 0-many | |
+| ams_tray_color_metric | *Filament color in the AMS, includes the AMS Number 0-many & Tray Numbers 0-4 | |
+| ams_bed_temp_metric | *Temperature of the AMS bed, includes the AMS Number 0-many & Tray Numbers 0-4 | |
+| big_fan1_speed_metric | Big1 Fan Speed  | |
+| big_fan2_speed_metric | Big2 Fan Speed  | |
+| chamber_temper_metric | Temperature of the Bambu Enclosure  | |
+| cooling_fan_speed_metric | Print Head Cooling Fan Speed  | |
+| fail_reason_metric | Failure Print Reason Code  | |
+| fan_gear_metric | Fan Gear   | |
+| layer_number_metric | GCode Layer Number of the Print  | |
+| mc_percent_metric | Print Progress in Percentage  | |
+| mc_print_error_code_metric | Print Progress Error Code | |
+| mc_print_stage_metric | Print Progress Stage | |
+| mc_print_sub_stage_metric | Print Progress Sub Stage | |
+| mc_remaining_time_metric | Print Progress Remaining Time in minutes  | |
+| nozzle_target_temper_metric |Nozzle Target Temperature Metric | |
+| nozzle_temper_metric | Nozzle Temperature Metric | |
+| print_error_metric | Print Error reported by the Control board | |
+| wifi_signal_metric | Wifi Signal Strength in dBm | |
 
 ---
 
 ## Steps to run the exporter
-Step 0: [Prereqs](##-step-0:-prereqs)
+Step 0: [Prereqs](#step-0-prereqs)
 
-Step 1: [Create the .env file](##-Step-1:-.env-file)
+Step 1: [Create the env file](#step-1-env-file)
 
-Step 2: [Clone the Repo](##-Step-2:-clone-the-repo)
+Step 2: [Clone the Repo](#step-2-clone-the-repo)
 
-Step 2: [Run Docker Compose](##-Step-3:-run-docker-compose)
+Step 3: [Run Docker Compose](#step-3-run-docker-compose)
 
 ---
 
 ## Step 0: Prereqs
-This project assumes you have a Grafana/Prometheus Setup. You would point your Prometheus instance to the (host:9101) endpoint. This is not a tutorial on Prometheus / Grafana. Click here <> for a full stack that includes Prometheus &  Grafana for this.
+This project assumes you have a Grafana/Prometheus Setup. You would point your Prometheus instance to the (host:9101) endpoint. This is not a tutorial on Prometheus / Grafana. Click [here](README-FULLSTACK.md) for a full stack that includes Prometheus &  Grafana for this.
 
 This program/container would run on a virtual host, raspberry pi, or a computer that has access to the Bambu printer. IT is possible to port forward your printer and host this in AWS or offpremise.
 - Install Git (only for windows)
@@ -65,7 +61,7 @@ This program/container would run on a virtual host, raspberry pi, or a computer 
 
 ---
 
-## Step 1: .env File
+## Step 1: env File
 Create an .env file.
 Add the Printer IP you configured when you setup your printer.
 Add the Printer Password from the Printer Network Settings Menu.
