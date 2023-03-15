@@ -41,6 +41,8 @@ https://hub.docker.com/r/aetrius/bambulabs-exporter
 ---
 
 ## Steps to run the exporter
+[Exporter Setup Video](https://www.youtube.com/watch?v=E80Y5kTJaNM&ab_channel=TylerBennet)
+
 Step 0: [Prereqs](#step-0-prereqs)
 
 Step 1: [Create the env file](#step-1-env-file)
@@ -52,9 +54,9 @@ Step 3: [Run Docker Compose](#step-3-run-docker-compose)
 ---
 
 ## Step 0: Prereqs
-This project assumes you have a Grafana/Prometheus Setup. You would point your Prometheus instance to the (host:9101) endpoint. This is not a tutorial on Prometheus / Grafana. Click [here](README-FULLSTACK.md) for a full stack that includes Prometheus &  Grafana for this.
+This project assumes you have a Grafana/Prometheus Setup. You would point your Prometheus instance to the (host:9101) endpoint. This is not a tutorial on Prometheus / Grafana. Click [here](README-FULLSTACK.md) for a full stack that includes Prometheus + Grafana + exporter for this.
 
-This program/container would run on a virtual host, raspberry pi, or a computer that has access to the Bambu printer. IT is possible to port forward your printer and host this in AWS or offpremise.
+This program/container would run on a virtual host, raspberry pi, or a computer that has access to the BambuLabs printer. IT is possible to port forward your printer and host this in AWS or off-premise.
 - Install Git (only for windows)
 - Install Docker
 - Install Docker-Compose
