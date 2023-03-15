@@ -2,20 +2,19 @@
 # BAMBULABS EXPORTER
 This is an exporter for all the data peeps that want to know all the things about their awesome BambuLabs 3D Printer. This was only tested on the X1C.
 
-![alt text](./bmb.png)
+`Supported BambuLabs X1 Firmware:
+1.04.01.00`
 
-## Prereqs
-This project assumes you have a Grafana/Prometheus Setup. You would point your Prometheus instance to the (host:9101) endpoint. This is not a tutorial on Prometheus / Grafana.
-This program/container would run on a virtual host, raspberry pi, or a computer that has access to the Bambu printer. IT is possible to port forward your printer and host this in AWS or offpremise. Watch the video for the steps to run Prometheus/Grafana with the Bambulabs exporter.
 
-- Install Git (only for windows)
-- Install Docker
-- Install Docker-Compose
+![alt text](./images/bmb2.png)
+![alt text](./images/bmb3.png)
 
 
 ## GO, DOCKER, & PROMETHEUS ⚡ Powered
 This is an MQTT Exporter powered by Go & Docker. 
 https://hub.docker.com/r/aetrius/bambulabs-exporter
+
+
 
 ### Prometheus Metrics Available
 - `*annotates recent changes or additions`
@@ -43,27 +42,30 @@ https://hub.docker.com/r/aetrius/bambulabs-exporter
 | nozzle_target_temper |Nozzle Target Temperature Metric | |
 | nozzle_temper | Nozzle Temperature Metric | |
 
-## Tutorial (for Monitoring stack (prometheus + grafana) + Bambulabs exporter)
-- (https://www.youtube.com/watch?v=VQSAEKGYJBQ)](https://www.youtube.com/watch?v=VQSAEKGYJBQ)
-- (Use the steps below if you just want to run the exporter and assuming you have a Prometheus/Grafana stack already).
-- If your monitor-compose.yml file will not start without a docker network. Run the following command `docker network create bambulabs-exporter_default`.
+---
+
+## Steps to run the exporter
+Step 0: [Prereqs](##-step-0:-prereqs)
+
+Step 1: [Create the .env file](##-Step-1:-.env-file)
+
+Step 2: [Clone the Repo](##-Step-2:-clone-the-repo)
+
+Step 2: [Run Docker Compose](##-Step-3:-run-docker-compose)
 
 ---
 
-## Steps to run the project
-``` 
-Step 1: Create the .env file (see the step below.)
+## Step 0: Prereqs
+This project assumes you have a Grafana/Prometheus Setup. You would point your Prometheus instance to the (host:9101) endpoint. This is not a tutorial on Prometheus / Grafana. Click here <> for a full stack that includes Prometheus &  Grafana for this.
 
-Step 2: Clone the Repo
-
-Step 3: Change Directory into the cloned repo.
-
-Step 4: Run Docker Compose 
-```
+This program/container would run on a virtual host, raspberry pi, or a computer that has access to the Bambu printer. IT is possible to port forward your printer and host this in AWS or offpremise.
+- Install Git (only for windows)
+- Install Docker
+- Install Docker-Compose
 
 ---
 
-### .env File
+## Step 1: .env File
 Create an .env file.
 Add the Printer IP you configured when you setup your printer.
 Add the Printer Password from the Printer Network Settings Menu.
@@ -73,14 +75,22 @@ Add the MQTT_TOPIC for your printer. This can be achived by loading up an MQTT A
 - Collect the MQTT_TOPIC by expanding the "Device", "Serial Number", "Report". The result should look similar to "device/00M00A2B08124765/report"
 
 ```
+# EXAMPLE .ENV FILE
 BAMBU_PRINTER_IP=""
 USERNAME="bblp"
 PASSWORD=""
 MQTT_TOPIC="device/00M00A2B08124765/report"
 ```
 
+
+## Step 2: Clone the repo
+
 ```
-git clone
+git clone https://github.com/Aetrius/Bambulabs-Exporter.git
+```
+
+## Step 3: Run Docker Compose
+```
 cd Bambulabs-Exporter
 docker-compose up -d
 ```
@@ -90,21 +100,20 @@ docker-compose up -d
 ## (Important Notes)
 You will need to likely run an MQTT program to test your connection. You can pull the password from the printer interface manually, or reset it on the printer itself.
 
----
 
 ### Prometheus Ingestion
 Setup prometheus to scrape the node and setup the ports to pull from port 9101.
 
----
+
 
 ### Bugs
-- 3/4/2023 - Possible bug with docker networking on monitor-compose. Added solution to readme. Pending review.
+- 3/4/2023 - Exporter loses connection during firmware upgrade or powercycle. (Temp solution to restart the docker container).
 
 ---
 
 ### Feature Changes
 - 3/4/2023 - Added new Metrics ams_humidity, ams_temp, ams_tray_color, ams_bed_temp. These include ams number and tray numbers to be dynamic depending on how many AMS's are included. Will push new container to dockerhub later today 3/4/23
-
+- 2/28/2023 - Initial Metrics released. Further re-work needed to account for all the useful metrics available.
 ---
 
 ### Future Development
