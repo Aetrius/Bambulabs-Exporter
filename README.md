@@ -61,7 +61,7 @@ This program/container would run on a virtual host, raspberry pi, or a computer 
 
 ---
 
-## Step 1 env File
+## Step 1: env File
 Create an .env file.
 Add the Printer IP you configured when you setup your printer.
 Add the Printer Password from the Printer Network Settings Menu.
@@ -79,13 +79,13 @@ MQTT_TOPIC="device/00M00A2B08124765/report"
 ```
 
 
-## Step 2 Clone the repo
+## Step 2: Clone the repo
 
 ```
 git clone https://github.com/Aetrius/Bambulabs-Exporter.git
 ```
 
-## Step 3 Run Docker Compose
+## Step 3: Run Docker Compose
 ```
 cd Bambulabs-Exporter
 docker-compose up -d
