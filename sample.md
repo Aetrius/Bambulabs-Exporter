@@ -1,3 +1,4 @@
+```
 # HELP ams_bed_temp_metric temperature of the ams bed
 # TYPE ams_bed_temp_metric gauge
 ams_bed_temp_metric{ams_number="0",tray_number="0"} 0
