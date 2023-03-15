@@ -40,18 +40,18 @@ https://hub.docker.com/r/aetrius/bambulabs-exporter
 ---
 
 ## Steps to run the exporter
-Step 0: [Prereqs](## Step 0: Prereqs)
+Step 0: [Prereqs](#step-0-prereqs)
 
-Step 1: [Create the .env file](##-Step-1:-.env-file)
+Step 1: [Create the env file](#step-1-env-file)
 
-Step 2: [Clone the Repo](##-Step-2:-clone-the-repo)
+Step 2: [Clone the Repo](#step-2-clone-the-repo)
 
-Step 2: [Run Docker Compose](##-Step-3:-run-docker-compose)
+Step 3: [Run Docker Compose](#step-3-run-docker-compose)
 
 ---
 
 ## Step 0: Prereqs
-This project assumes you have a Grafana/Prometheus Setup. You would point your Prometheus instance to the (host:9101) endpoint. This is not a tutorial on Prometheus / Grafana. Click here <> for a full stack that includes Prometheus &  Grafana for this.
+This project assumes you have a Grafana/Prometheus Setup. You would point your Prometheus instance to the (host:9101) endpoint. This is not a tutorial on Prometheus / Grafana. Click [here](README-FULLSTACK.md) for a full stack that includes Prometheus &  Grafana for this.
 
 This program/container would run on a virtual host, raspberry pi, or a computer that has access to the Bambu printer. IT is possible to port forward your printer and host this in AWS or offpremise.
 - Install Git (only for windows)
@@ -60,7 +60,7 @@ This program/container would run on a virtual host, raspberry pi, or a computer 
 
 ---
 
-## Step 1: .env File
+## Step 1 env File
 Create an .env file.
 Add the Printer IP you configured when you setup your printer.
 Add the Printer Password from the Printer Network Settings Menu.
@@ -78,13 +78,13 @@ MQTT_TOPIC="device/00M00A2B08124765/report"
 ```
 
 
-## Step 2: Clone the repo
+## Step 2 Clone the repo
 
 ```
 git clone https://github.com/Aetrius/Bambulabs-Exporter.git
 ```
 
-## Step 3: Run Docker Compose
+## Step 3 Run Docker Compose
 ```
 cd Bambulabs-Exporter
 docker-compose up -d
