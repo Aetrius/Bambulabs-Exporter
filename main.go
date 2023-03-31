@@ -379,15 +379,36 @@ func main() {
 	username = env("USERNAME")
 	password = env("PASSWORD")
 	mqtt_topic = env("MQTT_TOPIC")
+
+	if broker == "" {
+		broker = os.Getenv("BAMBU_PRINTER_IP")
+	}
+
+	if password == "" {
+		password = os.Getenv("PASSWORD")
+	}
+
+	if mqtt_topic == "device/<>/report" {
+		mqtt_topic = os.Getenv("MQTT_TOPIC")
+	}
+
 	fmt.Printf("\nEnv Vars Loaded")
 
 	fmt.Printf("\nRegistering collector")
 	bambulabs := newBambulabsCollector()
 	prometheus.MustRegister(bambulabs)
-
+	http.HandleFunc("/", home)
 	http.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(":9101", nil))
 
+}
+
+const body = `<html><head><title>BambuLabs Exporter Metrics</title></head><body>
+			<h1>BambuLabs Exporter</h1><p><a href='` + "/metrics" + `'>Metrics</a></p></body>
+			</html>`
+
+func home(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, body)
 }
 
 func newTLSConfig() *tls.Config {
