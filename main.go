@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -379,15 +380,49 @@ func main() {
 	username = env("USERNAME")
 	password = env("PASSWORD")
 	mqtt_topic = env("MQTT_TOPIC")
+
+	if broker == "" {
+		broker = os.Getenv("BAMBU_PRINTER_IP")
+	}
+
+	if password == "" {
+		password = os.Getenv("PASSWORD")
+	}
+
+	if mqtt_topic == "device/<>/report" {
+		mqtt_topic = os.Getenv("MQTT_TOPIC")
+	}
+
 	fmt.Printf("\nEnv Vars Loaded")
 
 	fmt.Printf("\nRegistering collector")
 	bambulabs := newBambulabsCollector()
 	prometheus.MustRegister(bambulabs)
-
+	log.Fatal(serverMetrics(*listenAddress, *metricPath))
 	http.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(":9101", nil))
 
+}
+
+var (
+	listenAddress = flag.String("web.listen-address", ":9101", "Address to listen on for web interface.")
+	metricPath    = flag.String("web.metrics-path", "/metrics", "Path under which to expose metrics.")
+)
+
+func serverMetrics(listenAddress, metricsPath string) error {
+	http.Handle(metricsPath, promhttp.Handler())
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(`
+            <html>
+            <head><title>BambuLabs Exporter Metrics</title></head>
+            <body>
+            <h1>Metrics</h1>
+            <p><a href='` + metricsPath + `'>Metrics</a></p>
+            </body>
+            </html>
+        `))
+	})
+	return http.ListenAndServe(":9101", nil)
 }
 
 func newTLSConfig() *tls.Config {
