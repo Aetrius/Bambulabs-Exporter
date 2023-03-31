@@ -380,11 +380,11 @@ func main() {
 	password = env("PASSWORD")
 	mqtt_topic = env("MQTT_TOPIC")
 
-	if broker == "" {
+	if broker == "" || len(broker) == 0 {
 		broker = os.Getenv("BAMBU_PRINTER_IP")
 	}
 
-	if password == "" {
+	if password == "" || len(password) == 0 {
 		password = os.Getenv("PASSWORD")
 	}
 
