@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/tls"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -398,31 +397,18 @@ func main() {
 	fmt.Printf("\nRegistering collector")
 	bambulabs := newBambulabsCollector()
 	prometheus.MustRegister(bambulabs)
-	log.Fatal(serverMetrics(*listenAddress, *metricPath))
+	http.HandleFunc("/", home)
 	http.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(":9101", nil))
 
 }
 
-var (
-	listenAddress = flag.String("web.listen-address", ":9101", "Address to listen on for web interface.")
-	metricPath    = flag.String("web.metrics-path", "/metrics", "Path under which to expose metrics.")
-)
+const body = `<html><head><title>BambuLabs Exporter Metrics</title></head><body>
+			<h1>BambuLabs Exporter</h1><p><a href='` + metricsPath + `'>Metrics</a></p></body>
+			</html>`
 
-func serverMetrics(listenAddress, metricsPath string) error {
-	http.Handle(metricsPath, promhttp.Handler())
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`
-            <html>
-            <head><title>BambuLabs Exporter Metrics</title></head>
-            <body>
-            <h1>Metrics</h1>
-            <p><a href='` + metricsPath + `'>Metrics</a></p>
-            </body>
-            </html>
-        `))
-	})
-	return http.ListenAndServe(":9101", nil)
+func home(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, body)
 }
 
 func newTLSConfig() *tls.Config {
