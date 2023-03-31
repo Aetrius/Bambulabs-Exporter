@@ -404,7 +404,7 @@ func main() {
 }
 
 const body = `<html><head><title>BambuLabs Exporter Metrics</title></head><body>
-			<h1>BambuLabs Exporter</h1><p><a href='` + metricsPath + `'>Metrics</a></p></body>
+			<h1>BambuLabs Exporter</h1><p><a href='` + "/metrics" + `'>Metrics</a></p></body>
 			</html>`
 
 func home(w http.ResponseWriter, r *http.Request) {
