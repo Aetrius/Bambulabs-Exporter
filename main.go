@@ -398,9 +398,9 @@ func main() {
 	bambulabs := newBambulabsCollector()
 	prometheus.MustRegister(bambulabs)
 	http.HandleFunc("/", home)
+	http.HandleFunc("/healthz", healthz)
 	http.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(":9101", nil))
-
 }
 
 const body = `<html><head><title>BambuLabs Exporter Metrics</title></head><body>
@@ -409,6 +409,11 @@ const body = `<html><head><title>BambuLabs Exporter Metrics</title></head><body>
 
 func home(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, body)
+}
+
+func healthz(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "OK")
 }
 
 func newTLSConfig() *tls.Config {
