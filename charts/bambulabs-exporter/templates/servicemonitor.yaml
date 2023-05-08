@@ -1,0 +1,15 @@
+{{- if .Values.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "bambulabs-exporter.fullname" . }}
+  labels:
+    {{- include "bambulabs-exporter.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "bambulabs-exporter.labels" . | nindent 4 }}
+  endpoints:
+    - port: metrics
+      path: /metrics
+{{- end }}
