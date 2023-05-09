@@ -4,6 +4,16 @@
 
 replicaCount: 1
 
+printerConfiguration:
+  connectivity:
+    ip: 192.168.0.123
+    port: 8883
+  authentication:
+    username: bblp
+    password: 123456789
+  device:
+    serialNumber: 123456789
+
 image:
   repository: ghcr.io/matthew-beckett/bambulabs-exporter/bambulabs-exporter
   pullPolicy: IfNotPresent

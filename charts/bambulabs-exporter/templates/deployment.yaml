@@ -5,9 +5,7 @@ metadata:
   labels:
     {{- include "bambulabs-exporter.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "bambulabs-exporter.selectorLabels" . | nindent 6 }}
@@ -27,12 +25,22 @@ spec:
       serviceAccountName: {{ include "bambulabs-exporter.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "bambulabs-exporter.fullname" . }}
+            items:
+              - key: .env
+                path: .env
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app
           ports:
             - name: metrics
               containerPort: {{ .Values.service.port }}

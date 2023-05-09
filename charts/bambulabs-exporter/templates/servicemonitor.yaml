@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "bambulabs-exporter.labels" . | nindent 4 }}
+      app.kubernetes.io/name: bambulabs-exporter
   endpoints:
     - port: metrics
       path: /metrics
