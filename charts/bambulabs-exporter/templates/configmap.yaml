@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "bambulabs-exporter.fullname" . }}
+data:
+  .env: |-
+    BAMBU_PRINTER_IP={{ .Values.printerConfiguration.connectivity.ip }}
+    USERNAME={{ .Values.printerConfiguration.authentication.username }}
+    PASSWORD={{ .Values.printerConfiguration.authentication.password }}
+    MQTT_TOPIC=device/{{ .Values.printerConfiguration.device.serialNumber }}/report
