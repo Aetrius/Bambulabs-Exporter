@@ -219,9 +219,9 @@ func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 	opts.SetTLSConfig(newTLSConfig())
 	client := mqtt.NewClient(opts)
 	token := client.Connect()
-	if token.Wait() && token.Error() != nil {
-		panic(token.Error())
-	}
+	// if token.Wait() && token.Error() != nil {
+	// 	panic(token.Error())
+	// }
 
 	sub(client)
 	//defer client.Disconnect(250)
