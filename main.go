@@ -219,9 +219,9 @@ func (collector *bambulabsCollector) Collect(ch chan<- prometheus.Metric) {
 	opts.SetTLSConfig(newTLSConfig())
 	client := mqtt.NewClient(opts)
 	token := client.Connect()
-	if token.Wait() && token.Error() != nil {
-		panic(token.Error())
-	}
+	// if token.Wait() && token.Error() != nil {
+	// 	panic(token.Error())
+	// }
 
 	sub(client)
 	//defer client.Disconnect(250)
@@ -403,9 +403,16 @@ func main() {
 	log.Fatal(http.ListenAndServe(":9101", nil))
 }
 
-const body = `<html><head><title>BambuLabs Exporter Metrics</title></head><body>
-			<h1>BambuLabs Exporter</h1><p><a href='` + "/metrics" + `'>Metrics</a></p></body>
-			</html>`
+const body = `<html>
+				<head>
+					<title>BambuLabs Exporter Metrics</title>
+				</head>
+				<body>
+					<h1>BambuLabs Exporter</h1>
+					<p><a href='` + "/metrics" + `'>metrics</a></p>
+					<p><a href='` + "/healthz" + `'>healthz</a></p>
+				</body>
+			  </html>`
 
 func home(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, body)
