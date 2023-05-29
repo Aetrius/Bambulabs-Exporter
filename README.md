@@ -110,6 +110,7 @@ Setup prometheus to scrape the node and setup the ports to pull from port 9101.
 ---
 
 ### Feature Changes
+- 5/28/2023 - Added Healthz endpoint
 - 3/31/2023 - Added support for passing env vars to the container instead of the .env file. This helps when using a docker-compose file to pass vars OR in a kubernetes manifest to pass the vars. More to come on documentation.
 - 3/4/2023 - Added new Metrics ams_humidity, ams_temp, ams_tray_color, ams_bed_temp. These include ams number and tray numbers to be dynamic depending on how many AMS's are included. Will push new container to dockerhub later today 3/4/23
 - 2/28/2023 - Initial Metrics released. Further re-work needed to account for all the useful metrics available.
