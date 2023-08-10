@@ -15,7 +15,7 @@ printerConfiguration:
     serialNumber: 123456789
 
 image:
-  repository: ghcr.io/matthew-beckett/bambulabs-exporter/bambulabs-exporter
+  repository: ghcr.io/aetrius/bambulabs-exporter/bambulabs-exporter
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: main
